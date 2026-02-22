@@ -1,121 +1,19 @@
 /* ========================================
-   PERSONAL WEBSITE — SHUBHI MISHRA
-   Particles · Scroll Reveal · Counters
+   SHUBHI MAHESHWARI MISHRA
+   Premium Interactions · Scroll Reveal · Counters · Skill Bars
    ======================================== */
-
-// ---------- PARTICLE SYSTEM ----------
-(function initParticles() {
-  const canvas = document.getElementById('particleCanvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w, h, particles, mouse;
-
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
-
-  mouse = { x: -1000, y: -1000 };
-
-  window.addEventListener('mousemove', function (e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-
-  function Particle() {
-    this.x = Math.random() * w;
-    this.y = Math.random() * h;
-    this.vx = (Math.random() - 0.5) * 0.4;
-    this.vy = (Math.random() - 0.5) * 0.4;
-    this.radius = Math.random() * 1.8 + 0.4;
-    this.opacity = Math.random() * 0.5 + 0.15;
-  }
-
-  function createParticles() {
-    var count = Math.floor((w * h) / 12000);
-    count = Math.min(count, 180);
-    count = Math.max(count, 40);
-    particles = [];
-    for (var i = 0; i < count; i++) {
-      particles.push(new Particle());
-    }
-  }
-
-  function drawLine(p1, p2, dist) {
-    var maxDist = 140;
-    if (dist > maxDist) return;
-    var alpha = (1 - dist / maxDist) * 0.15;
-    ctx.strokeStyle = 'rgba(0,112,242,' + alpha + ')';
-    ctx.lineWidth = 0.6;
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.lineTo(p2.x, p2.y);
-    ctx.stroke();
-  }
-
-  function frame() {
-    ctx.clearRect(0, 0, w, h);
-
-    for (var i = 0; i < particles.length; i++) {
-      var p = particles[i];
-
-      var dx = p.x - mouse.x;
-      var dy = p.y - mouse.y;
-      var dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 120) {
-        p.x += dx * 0.015;
-        p.y += dy * 0.015;
-      }
-
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if (p.x < 0) p.x = w;
-      if (p.x > w) p.x = 0;
-      if (p.y < 0) p.y = h;
-      if (p.y > h) p.y = 0;
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,112,242,' + p.opacity + ')';
-      ctx.fill();
-
-      for (var j = i + 1; j < particles.length; j++) {
-        var p2 = particles[j];
-        var ddx = p.x - p2.x;
-        var ddy = p.y - p2.y;
-        var d = Math.sqrt(ddx * ddx + ddy * ddy);
-        drawLine(p, p2, d);
-      }
-    }
-
-    requestAnimationFrame(frame);
-  }
-
-  window.addEventListener('resize', function () {
-    resize();
-    createParticles();
-  });
-
-  resize();
-  createParticles();
-  frame();
-})();
-
 
 // ---------- NAVBAR SCROLL ----------
 (function initNavbar() {
   var navbar = document.getElementById('navbar');
   window.addEventListener('scroll', function () {
-    var y = window.pageYOffset;
-    if (y > 60) {
+    if (window.pageYOffset > 40) {
       navbar.classList.add('scrolled');
     } else {
       navbar.classList.remove('scrolled');
     }
   });
 })();
-
 
 // ---------- MOBILE NAV ----------
 (function initMobileNav() {
@@ -128,8 +26,7 @@
     toggle.classList.toggle('active');
   });
 
-  var links = mobileNav.querySelectorAll('a');
-  links.forEach(function (link) {
+  mobileNav.querySelectorAll('a').forEach(function (link) {
     link.addEventListener('click', function () {
       mobileNav.classList.remove('open');
       toggle.classList.remove('active');
@@ -137,14 +34,19 @@
   });
 })();
 
-
 // ---------- SCROLL REVEAL ----------
 (function initReveal() {
-  var targets = document.querySelectorAll(
-    '.section-header, .about-grid, .skill-card, .timeline-item, ' +
-    '.education-card, .cert-card, .contact-card'
+  var singles = document.querySelectorAll(
+    '.section-label, .section-heading, .about-layout, .exp-card, ' +
+    '.skill-col, .edu-card, .cert-item, .cta-block, .metrics-strip, .about-heading'
   );
-  targets.forEach(function (el) {
+  singles.forEach(function (el) {
+    el.classList.add('reveal');
+  });
+
+  var staggerGroups = document.querySelectorAll('.exp-tags, .about-cards, .cert-list');
+  staggerGroups.forEach(function (el) {
+    el.classList.add('reveal-stagger');
     el.classList.add('reveal');
   });
 
@@ -156,46 +58,43 @@
         }
       });
     },
-    { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+    { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
   );
 
-  targets.forEach(function (el) {
+  document.querySelectorAll('.reveal').forEach(function (el) {
     observer.observe(el);
   });
 })();
 
-
 // ---------- COUNTER ANIMATION ----------
 (function initCounters() {
-  var counters = document.querySelectorAll('.stat-number');
+  var counters = document.querySelectorAll('.metric-value');
   var hasRun = false;
 
   function animateCounters() {
     counters.forEach(function (el) {
       var target = parseInt(el.getAttribute('data-target'), 10);
       if (isNaN(target)) return;
-      var duration = 2000;
+      var duration = 1800;
       var startTime = null;
 
       function step(timestamp) {
         if (!startTime) startTime = timestamp;
         var progress = Math.min((timestamp - startTime) / duration, 1);
         var ease = 1 - Math.pow(2, -10 * progress);
-        var current = Math.floor(ease * target);
-        el.textContent = current.toLocaleString();
+        el.textContent = Math.floor(ease * target);
         if (progress < 1) {
           requestAnimationFrame(step);
         } else {
-          el.textContent = target.toLocaleString();
+          el.textContent = target;
         }
       }
-
       requestAnimationFrame(step);
     });
   }
 
-  var hero = document.getElementById('hero');
-  if (!hero) return;
+  var strip = document.querySelector('.metrics-strip');
+  if (!strip) return;
 
   var observer = new IntersectionObserver(
     function (entries) {
@@ -206,14 +105,44 @@
         }
       });
     },
-    { threshold: 0.3 }
+    { threshold: 0.4 }
   );
-
-  observer.observe(hero);
+  observer.observe(strip);
 })();
 
+// ---------- SKILL BAR ANIMATION ----------
+(function initSkillBars() {
+  var bars = document.querySelectorAll('.skill-fill');
+  var hasRun = false;
 
-// ---------- SMOOTH SCROLL FOR ANCHOR LINKS ----------
+  function animateBars() {
+    bars.forEach(function (bar) {
+      var width = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(function () {
+        bar.style.width = width;
+      }, 100);
+    });
+  }
+
+  var skillSection = document.getElementById('skills');
+  if (!skillSection) return;
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && !hasRun) {
+          hasRun = true;
+          animateBars();
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  observer.observe(skillSection);
+})();
+
+// ---------- SMOOTH SCROLL ----------
 (function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (e) {
@@ -229,24 +158,27 @@
   });
 })();
 
+// ---------- ACTIVE NAV HIGHLIGHTING ----------
+(function initActiveNav() {
+  var sections = document.querySelectorAll('.section, #hero');
+  var navLinks = document.querySelectorAll('.nav-links a');
 
-// ---------- TILT EFFECT ON SKILL CARDS ----------
-(function initTilt() {
-  var cards = document.querySelectorAll('[data-tilt]');
-  cards.forEach(function (card) {
-    card.addEventListener('mousemove', function (e) {
-      var rect = card.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      var cx = rect.width / 2;
-      var cy = rect.height / 2;
-      var rotateX = ((y - cy) / cy) * -4;
-      var rotateY = ((x - cx) / cx) * 4;
-      card.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-4px)';
-    });
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.getAttribute('id');
+          navLinks.forEach(function (link) {
+            link.style.color = '';
+            if (link.getAttribute('href') === '#' + id) {
+              link.style.color = 'var(--blue)';
+            }
+          });
+        }
+      });
+    },
+    { threshold: 0.3, rootMargin: '-80px 0px -40% 0px' }
+  );
 
-    card.addEventListener('mouseleave', function () {
-      card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
-    });
-  });
+  sections.forEach(function (s) { observer.observe(s); });
 })();
